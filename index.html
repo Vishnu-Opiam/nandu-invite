@@ -280,7 +280,7 @@
   .done svg{width:64px;margin-bottom:1.8rem;animation:bob 2.6s ease-in-out infinite}
   .done h3{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,3.2rem);color:#fff;margin-bottom:1rem}
   .done p{color:var(--muted);max-width:420px;line-height:1.9;letter-spacing:.04em}
-  .done a{color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold);margin-top:1.6rem;display:inline-block;font-size:.85rem;letter-spacing:.2em;text-transform:uppercase}
+  .done .redirect-txt{color:var(--gold);margin-top:1.8rem;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;opacity:0.85;}
 
   /* progress rail */
   .rail{position:fixed;right:clamp(.8rem,2vw,1.6rem);top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:.9rem}
@@ -489,7 +489,7 @@
   </svg>
   <h3 id="doneTitle">See you in Muziris.</h3>
   <p id="doneMsg">Your RSVP is on its way. Thank you for keeping the heritage alive with us.</p>
-  <a href="#" id="mailLink">Send a note to Nandu &rarr;</a>
+  <div id="redirectText" class="redirect-txt"></div>
 </div>
 
 <div class="hint" id="hint">Click anywhere &rarr;</div>
@@ -593,7 +593,20 @@
       ? name+', your RSVP is noted ('+guests+'). Thank you for keeping the heritage alive with us — 31st May, 5:30 PM, Bazar Road.'
       : name+', thank you for letting us know. The stories will be waiting whenever you can come.';
 
+    let timeLeft = 10;
+    const redirectEl = document.getElementById('redirectText');
+    redirectEl.textContent = `You will be redirected to Aalmaram's website in ${timeLeft} secs.`;
     document.getElementById('done').classList.add('show');
+
+    const timer = setInterval(() => {
+      timeLeft -= 1;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        window.location.href = 'https://aalmaram.com';
+      } else {
+        redirectEl.textContent = `You will be redirected to Aalmaram's website in ${timeLeft} secs.`;
+      }
+    }, 1000);
   });
 </script>
 </body>

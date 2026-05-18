@@ -505,6 +505,9 @@
 </nav>
 
 <script>
+  // ← paste your n8n webhook URL here after activating the workflow
+  const N8N_WEBHOOK = 'https://your-n8n-domain.com/webhook/nandu-rsvp';
+
   const order=['hero','venue','stories','rsvp'];
   const secs=order.map(id=>document.getElementById(id));
   const dots=[...document.querySelectorAll('.rail a')];
@@ -566,26 +569,30 @@
   show(0);
 
   /* submit */
-  const form=document.getElementById('rsvpForm');
-  form.addEventListener('submit',ev=>{
+  const form=document.getElementById(‘rsvpForm’);
+  form.addEventListener(‘submit’,async ev=>{
     ev.preventDefault();
-    const name=document.getElementById('name').value.trim()||'Friend';
-    const email=document.getElementById('email').value.trim();
-    const attend=form.querySelector('[data-group=attend] .sel').dataset.v;
-    const guests=form.querySelector('[data-group=guests] .sel').dataset.v;
-    const coming=attend.toLowerCase().startsWith('yes');
+    const name=document.getElementById(‘name’).value.trim()||’Friend’;
+    const email=document.getElementById(‘email’).value.trim();
+    const attend=form.querySelector(‘[data-group=attend] .sel’).dataset.v;
+    const guests=form.querySelector(‘[data-group=guests] .sel’).dataset.v;
+    const coming=attend.toLowerCase().startsWith(‘yes’);
 
-    document.getElementById('doneTitle').textContent=coming?'See you in Muziris.':'We’ll miss you.';
-    document.getElementById('doneMsg').textContent=coming
-      ? name+', your RSVP is noted ('+guests+'). Thank you for keeping the heritage alive with us — 31st May, 5:30 PM, Bazar Road.'
-      : name+', thank you for letting us know. The stories will be waiting whenever you can come.';
+    // send to n8n
+    try {
+      await fetch(N8N_WEBHOOK, {
+        method: ‘POST’,
+        headers: {‘Content-Type’:’application/json’},
+        body: JSON.stringify({ name, email, attending: attend, guests, timestamp: new Date().toISOString() })
+      });
+    } catch(e) { console.warn(‘RSVP webhook failed:’, e); }
 
-    const subj=encodeURIComponent('RSVP — An Evening for Nandu in Muziris');
-    const bodyTxt=encodeURIComponent(
-      'Name: '+name+'\nEmail: '+email+'\nAttending: '+attend+'\nGuests: '+guests
-    );
-    document.getElementById('mailLink').href='mailto:?subject='+subj+'&body='+bodyTxt;
-    document.getElementById('done').classList.add('show');
+    document.getElementById(‘doneTitle’).textContent=coming?’See you in Muziris.’:’We\’ll miss you.’;
+    document.getElementById(‘doneMsg’).textContent=coming
+      ? name+’, your RSVP is noted (‘+guests+’). Thank you for keeping the heritage alive with us — 31st May, 5:30 PM, Bazar Road.’
+      : name+’, thank you for letting us know. The stories will be waiting whenever you can come.’;
+
+    document.getElementById(‘done’).classList.add(‘show’);
 
     // Send data to Vercel Serverless Function, which securely proxies to n8n
     fetch('/api/rsvp', {

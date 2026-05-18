@@ -517,6 +517,9 @@
   const count=document.getElementById('count');
   let cur=0;
 
+  // safety: if any section is missing from DOM, bail early
+  if(secs.some(s=>!s)){console.error('Missing slide element',secs);}
+
   function show(i){
     i=Math.max(0,Math.min(order.length-1,i));
     secs.forEach((s,idx)=>{
@@ -569,44 +572,28 @@
   show(0);
 
   /* submit */
-  const form=document.getElementById(‘rsvpForm’);
-  form.addEventListener(‘submit’,async ev=>{
+  const form=document.getElementById('rsvpForm');
+  form.addEventListener('submit',async ev=>{
     ev.preventDefault();
-    const name=document.getElementById(‘name’).value.trim()||’Friend’;
-    const email=document.getElementById(‘email’).value.trim();
-    const attend=form.querySelector(‘[data-group=attend] .sel’).dataset.v;
-    const guests=form.querySelector(‘[data-group=guests] .sel’).dataset.v;
-    const coming=attend.toLowerCase().startsWith(‘yes’);
+    const name=document.getElementById('name').value.trim()||'Friend';
+    const email=document.getElementById('email').value.trim();
+    const attend=form.querySelector('[data-group=attend] .sel').dataset.v;
+    const guests=form.querySelector('[data-group=guests] .sel').dataset.v;
+    const coming=attend.toLowerCase().startsWith('yes');
 
-    // send to n8n
-    try {
-      await fetch(N8N_WEBHOOK, {
-        method: ‘POST’,
-        headers: {‘Content-Type’:’application/json’},
-        body: JSON.stringify({ name, email, attending: attend, guests, timestamp: new Date().toISOString() })
-      });
-    } catch(e) { console.warn(‘RSVP webhook failed:’, e); }
-
-    document.getElementById(‘doneTitle’).textContent=coming?’See you in Muziris.’:’We\’ll miss you.’;
-    document.getElementById(‘doneMsg’).textContent=coming
-      ? name+’, your RSVP is noted (‘+guests+’). Thank you for keeping the heritage alive with us — 31st May, 5:30 PM, Bazar Road.’
-      : name+’, thank you for letting us know. The stories will be waiting whenever you can come.’;
-
-    document.getElementById(‘done’).classList.add(‘show’);
-
-    // Send data to Vercel Serverless Function, which securely proxies to n8n
+    // send the RSVP to the Vercel function (which proxies to n8n)
     fetch('/api/rsvp', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: name,
-        email: email,
-        attend: attend,
-        guests: guests
-      })
-    }).catch(err => console.error('Webhook error:', err));
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, attending: attend, guests, timestamp: new Date().toISOString() })
+    }).catch(err => console.warn('RSVP webhook failed:', err));
+
+    document.getElementById('doneTitle').textContent=coming?'See you in Muziris.':'We\'ll miss you.';
+    document.getElementById('doneMsg').textContent=coming
+      ? name+', your RSVP is noted ('+guests+'). Thank you for keeping the heritage alive with us — 31st May, 5:30 PM, Bazar Road.'
+      : name+', thank you for letting us know. The stories will be waiting whenever you can come.';
+
+    document.getElementById('done').classList.add('show');
   });
 </script>
 </body>

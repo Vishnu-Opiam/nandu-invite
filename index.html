@@ -138,10 +138,13 @@
   .body{font-size:clamp(.72rem,1.1vw,.82rem);line-height:1.6;color:#e7e8db}
   .body p{margin-bottom:.35rem}
   .body .name{color:var(--gold-soft);font-weight:700}
+  .portraits{
+    display:flex;align-items:flex-end;justify-content:center;gap:.4rem;
+  }
   .portrait{
     display:block;
     height:min(28svh,240px);
-    width:auto;max-width:100%;
+    width:auto;max-width:50%;
     object-fit:contain;object-position:bottom;
     justify-self:center;align-self:end;
     filter:saturate(1.02);
@@ -331,7 +334,7 @@
     .tree{max-width:180px;order:-1}
     .eyebrow{display:inline-block}
     #stories .sframe-top{grid-template-columns:1fr;gap:1rem}
-    .portrait{height:auto;max-height:22svh;width:auto;max-width:60%;margin:0 auto}
+    .portrait{height:auto;max-height:22svh;width:auto;max-width:48%;margin:0}
     #stories .sframe-vid{height:clamp(100px,18svh,180px)}
     .meta{grid-template-columns:1fr;gap:1.8rem}
     .fields-row{grid-template-columns:1fr;gap:0}
@@ -384,7 +387,10 @@
           <p class="reveal d5"><span class="name">Come</span> meet like-minded people who care to sustain our heritage.</p>
         </div>
       </div>
-      <img class="portrait reveal d3" src="Media/IMG-20260518-WA0004%20Frame.png" alt="Johaan Binny Kurvilla" />
+      <div class="portraits reveal d3">
+        <img class="portrait" src="Media/IMG-20260518-WA0004%20Frame.png" alt="Johaan Binny Kurvilla" />
+        <img class="portrait" src="Media/WhatsApp%20Image%202026-05-19%20at%2012.19.36%20AM.png" alt="Veda" />
+      </div>
     </div>
     <div class="sframe-vid">
       <div class="vid-fade"></div>

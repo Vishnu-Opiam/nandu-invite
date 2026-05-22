@@ -493,7 +493,7 @@
     <ellipse cx="28" cy="34" rx="18" ry="20"/><ellipse cx="40" cy="30" rx="14" ry="16"/>
     <path d="M22 28c3 4 8 6 12 5M26 42c3-2 6-3 9-2" stroke-width="1.6"/>
   </svg>
-  <h3 id="doneTitle">See you in Muziris.</h3>
+  <h3 id="doneTitle">See you at Armaan.</h3>
   <p id="doneMsg">Your RSVP is on its way. Thank you for keeping the heritage alive with us.</p>
   <div id="redirectText" class="redirect-txt"></div>
 </div>
@@ -594,12 +594,12 @@
       body: JSON.stringify({ name, email, attending: attend, guests, timestamp: new Date().toISOString() })
     }).catch(err => console.warn('RSVP webhook failed:', err));
 
-    document.getElementById('doneTitle').textContent=coming?'See you in Muziris.':'We\'ll miss you.';
+    document.getElementById('doneTitle').textContent=coming?'See you at Armaan.':'We\'ll miss you.';
     document.getElementById('doneMsg').textContent=coming
       ? name+', your RSVP is noted ('+guests+'). Thank you for keeping the heritage alive with us — 31st May, 5:30 PM, Bazar Road.'
       : name+', thank you for letting us know. The stories will be waiting whenever you can come.';
 
-    let timeLeft = 10;
+    let timeLeft = 5;
     const redirectEl = document.getElementById('redirectText');
     redirectEl.textContent = `You will be redirected to Aalmaram's website in ${timeLeft} secs.`;
     document.getElementById('done').classList.add('show');
